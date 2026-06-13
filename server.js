@@ -2,36 +2,44 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const compression = require('compression');
 const fs = require('fs');
 const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const {
+  globalLimiter,
+  strictLimiter,
+  analysisLimiter,
+  validateUsername,
+  validateDate,
+  validateSleepGoal,
+  sanitizeInput,
+  validateUserIdMiddleware,
+  requestSizeMiddleware,
+  securityHeadersMiddleware
+} = require('./middleware/security');
+const {
+  detectStressPatterns,
+  calculateWellnessTrend,
+  generatePersonalizedRecommendations,
+  assessSleepQuality,
+  analyzeAnxietyTrend
+} = require('./utils/analysis');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DB_PATH = path.join(__dirname, 'db.json');
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Browser security response headers
-app.use((req, res, next) => {
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  next();
-});
-
-// Input XSS sanitization
-function sanitizeInput(text) {
-  if (typeof text !== 'string') return text;
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
+// Security middleware stack
+app.use(securityHeadersMiddleware);
+app.use(requestSizeMiddleware());
+app.use(globalLimiter);
+app.use(validateUserIdMiddleware);
 
 // Database helper functions
 function readDB() {
@@ -130,12 +138,37 @@ app.get('/api/profile', (req, res) => {
 });
 
 // Update active profile
-app.post('/api/profile', (req, res) => {
-  const db = readDB();
-  const userData = getUserData(db, req.userId);
-  userData.user_profile = { ...userData.user_profile, ...req.body };
-  writeDB(db);
-  res.json({ success: true, profile: userData.user_profile });
+app.post('/api/profile', strictLimiter, (req, res) => {
+  try {
+    // Validate input
+    if (req.body.name && typeof req.body.name !== 'string') {
+      return res.status(400).json({ error: 'Invalid name format' });
+    }
+    if (req.body.target_date && !validateDate(req.body.target_date)) {
+      return res.status(400).json({ error: 'Invalid target date. Must be future date' });
+    }
+    if (req.body.sleep_goal_hours && !validateSleepGoal(req.body.sleep_goal_hours)) {
+      return res.status(400).json({ error: 'Sleep goal must be between 4-12 hours' });
+    }
+
+    const db = readDB();
+    const userData = getUserData(db, req.userId);
+    
+    // Sanitize and validate inputs
+    const sanitizedProfile = {
+      name: req.body.name ? sanitizeInput(req.body.name, 100) : userData.user_profile.name,
+      exam: req.body.exam ? sanitizeInput(req.body.exam, 100) : userData.user_profile.exam,
+      target_date: req.body.target_date || userData.user_profile.target_date,
+      sleep_goal_hours: req.body.sleep_goal_hours || userData.user_profile.sleep_goal_hours
+    };
+    
+    userData.user_profile = sanitizedProfile;
+    writeDB(db);
+    res.json({ success: true, profile: userData.user_profile });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
 });
 
 // Get journals of user
@@ -307,39 +340,40 @@ function analyzeJournalOffline(text) {
 }
 
 // POST /api/analyze-journal
-app.post('/api/analyze-journal', async (req, res) => {
-  const text = sanitizeInput(req.body.text);
-  if (!text || text.trim() === "") {
-    return res.status(400).json({ error: "Journal text is required" });
-  }
+app.post('/api/analyze-journal', analysisLimiter, async (req, res) => {
+  try {
+    const text = sanitizeInput(req.body.text, 5000);
+    if (!text || text.trim() === "") {
+      return res.status(400).json({ error: "Journal text is required" });
+    }
 
-  const db = readDB();
-  const userData = getUserData(db, req.userId);
-  const apiKey = process.env.GEMINI_API_KEY;
-  
-  // Core safety trigger: If critical distress is hit, immediately override and flag without needing Gemini API key
-  const safetyOverride = analyzeJournalOffline(text);
-  if (safetyOverride.safety_level === 'critical') {
-    const journalEntry = {
-      id: "j-" + Date.now(),
-      timestamp: new Date().toISOString(),
-      raw_text: text,
-      analysis: safetyOverride
-    };
-    userData.journals.push(journalEntry);
-    writeDB(db);
-    return res.json(journalEntry);
-  }
+    const db = readDB();
+    const userData = getUserData(db, req.userId);
+    const apiKey = process.env.GEMINI_API_KEY;
+    
+    // Core safety trigger: If critical distress is hit, immediately flag without needing Gemini API
+    const safetyOverride = analyzeJournalOffline(text);
+    if (safetyOverride.safety_level === 'critical') {
+      const journalEntry = {
+        id: "j-" + Date.now(),
+        timestamp: new Date().toISOString(),
+        raw_text: text,
+        analysis: safetyOverride
+      };
+      userData.journals.push(journalEntry);
+      writeDB(db);
+      return res.json(journalEntry);
+    }
 
-  if (apiKey && apiKey.trim() !== "") {
-    try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({
-        model: "gemini-2.5-flash",
-        generationConfig: { responseMimeType: "application/json" }
-      });
+    if (apiKey && apiKey.trim() !== "") {
+      try {
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({
+          model: "gemini-2.5-flash",
+          generationConfig: { responseMimeType: "application/json" }
+        });
 
-      const prompt = `Analyze the following student exam preparation journal entry. Return a JSON object containing:
+        const prompt = `Analyze the following student exam preparation journal entry. Return a JSON object containing:
 - primary_emotion (string, e.g. Anxious, Confident, Sad, Exhausted, Frustrated, Calm, Hopeless, Neutral)
 - stress_score (number between 0 and 100)
 - burnout_risk (number between 0 and 100)
@@ -355,37 +389,53 @@ app.post('/api/analyze-journal', async (req, res) => {
 Journal Entry:
 "${text}"`;
 
-      const response = await model.generateContent(prompt);
-      const parsedAnalysis = JSON.parse(response.response.text());
+        const response = await model.generateContent(prompt);
+        const parsedAnalysis = JSON.parse(response.response.text());
 
-      const journalEntry = {
-        id: "j-" + Date.now(),
-        timestamp: new Date().toISOString(),
-        raw_text: text,
-        analysis: parsedAnalysis
-      };
+        const journalEntry = {
+          id: "j-" + Date.now(),
+          timestamp: new Date().toISOString(),
+          raw_text: text,
+          analysis: parsedAnalysis
+        };
 
-      userData.journals.push(journalEntry);
-      writeDB(db);
-      return res.json(journalEntry);
+        userData.journals.push(journalEntry);
+        
+        // Calculate enhanced insights with pattern analysis
+        if (userData.journals.length > 1) {
+          const patterns = detectStressPatterns(userData.journals);
+          const wellnessScore = calculateWellnessTrend(userData.journals);
+          const recommendations = generatePersonalizedRecommendations(userData);
+          
+          journalEntry.analysis.patterns = patterns;
+          journalEntry.analysis.wellness_trend = wellnessScore;
+          journalEntry.analysis.personalized_tips = recommendations;
+        }
+        
+        writeDB(db);
+        return res.json(journalEntry);
 
-    } catch (apiError) {
-      console.error("Gemini API Error, falling back to offline analysis:", apiError);
+      } catch (apiError) {
+        console.error("Gemini API Error, falling back to offline analysis:", apiError);
+      }
     }
+
+    // Fallback Rule Engine
+    const analysis = analyzeJournalOffline(text);
+    const journalEntry = {
+      id: "j-" + Date.now(),
+      timestamp: new Date().toISOString(),
+      raw_text: text,
+      analysis: analysis
+    };
+
+    userData.journals.push(journalEntry);
+    writeDB(db);
+    res.json(journalEntry);
+  } catch (error) {
+    console.error('Journal analysis error:', error);
+    res.status(500).json({ error: 'Failed to analyze journal' });
   }
-
-  // Fallback Rule Engine
-  const analysis = analyzeJournalOffline(text);
-  const journalEntry = {
-    id: "j-" + Date.now(),
-    timestamp: new Date().toISOString(),
-    raw_text: text,
-    analysis: analysis
-  };
-
-  userData.journals.push(journalEntry);
-  writeDB(db);
-  res.json(journalEntry);
 });
 
 // Offline chatbot generator response
@@ -443,14 +493,15 @@ function generateOfflineChatResponse(message, history, lastJournal, examName) {
 }
 
 // POST /api/chat
-app.post('/api/chat', async (req, res) => {
-  const message = sanitizeInput(req.body.message);
-  if (!message || message.trim() === "") {
-    return res.status(400).json({ error: "Message is required" });
-  }
+app.post('/api/chat', analysisLimiter, async (req, res) => {
+  try {
+    const message = sanitizeInput(req.body.message, 2000);
+    if (!message || message.trim() === "") {
+      return res.status(400).json({ error: "Message is required" });
+    }
 
-  const db = readDB();
-  const userData = getUserData(db, req.userId);
+    const db = readDB();
+    const userData = getUserData(db, req.userId);
   const apiKey = process.env.GEMINI_API_KEY;
   const examName = userData.user_profile.exam;
   const journals = userData.journals || [];
@@ -531,6 +582,80 @@ Respond directly as Aura. Be warm, motivating, clear, and empathetic. Give a sup
   userData.chats.push(botMsg);
   writeDB(db);
   res.json({ response: botMsg.text });
+  } catch (error) {
+    console.error('Chat error:', error);
+    res.status(500).json({ error: 'Failed to process message' });
+  }
+});
+
+// GET /api/trends - Analytics and wellness trends
+app.get('/api/trends', (req, res) => {
+  try {
+    const db = readDB();
+    const userData = getUserData(db, req.userId);
+    const journals = userData.journals || [];
+
+    if (journals.length === 0) {
+      return res.json({
+        wellness_score: 50,
+        trends: null,
+        recommendations: ['Write your first journal entry to unlock insights'],
+        patterns: null,
+        sleep_assessment: null
+      });
+    }
+
+    const patterns = detectStressPatterns(journals);
+    const wellnessScore = calculateWellnessTrend(journals);
+    const recommendations = generatePersonalizedRecommendations(userData);
+    const sleepAssessment = assessSleepQuality(journals);
+    const anxietyTrend = analyzeAnxietyTrend(journals);
+
+    res.json({
+      wellness_score: wellnessScore,
+      trends: anxietyTrend,
+      recommendations,
+      patterns,
+      sleep_assessment: sleepAssessment,
+      total_journals: journals.length,
+      last_entry: journals.length > 0 ? journals[journals.length - 1].timestamp : null
+    });
+  } catch (error) {
+    console.error('Trends error:', error);
+    res.status(500).json({ error: 'Failed to fetch trends' });
+  }
+});
+
+// GET /api/wellness-summary - Summary of recent wellness
+app.get('/api/wellness-summary', (req, res) => {
+  try {
+    const db = readDB();
+    const userData = getUserData(db, req.userId);
+    const journals = userData.journals || [];
+    const recentJournals = journals.slice(-5);
+
+    const summary = {
+      total_entries: journals.length,
+      recent_entries: recentJournals.map(j => ({
+        timestamp: j.timestamp,
+        emotion: j.analysis.primary_emotion,
+        stress: j.analysis.stress_score,
+        burnout: j.analysis.burnout_risk,
+        triggers: j.analysis.detected_triggers
+      })),
+      average_stress: recentJournals.length > 0 
+        ? Math.round(recentJournals.reduce((sum, j) => sum + j.analysis.stress_score, 0) / recentJournals.length)
+        : 0,
+      average_burnout: recentJournals.length > 0
+        ? Math.round(recentJournals.reduce((sum, j) => sum + j.analysis.burnout_risk, 0) / recentJournals.length)
+        : 0
+    };
+
+    res.json(summary);
+  } catch (error) {
+    console.error('Wellness summary error:', error);
+    res.status(500).json({ error: 'Failed to fetch wellness summary' });
+  }
 });
 
 // Start server
