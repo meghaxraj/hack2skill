@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aura - AI-Powered Mental Well-being Companion for Students preparing for JEE, NEET, UPSC, GATE, and other high-stakes exams.">
+  <title>Aura | Student AI Well-being Companion</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  
+  <!-- SIGN IN / USER SELECTOR OVERLAY -->
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand-logo">
+          <i class="fa-solid fa-wind logo-icon"></i>
+        </div>
+        <h2>Welcome to Aura</h2>
+        <p>Your empathetic examination wellness sanctuary</p>
+      </div>
+
+      <div class="login-form">
+        <!-- Select Existing User -->
+        <div class="form-group" id="existing-users-group">
+          <label for="login-user-select">Switch to an existing student profile</label>
+          <select id="login-user-select">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+
+        <div class="login-divider">
+          <span>OR</span>
+        </div>
+
+        <!-- Create New User -->
+        <div class="form-group">
+          <label for="login-username-input">Create a new student workspace</label>
+          <input type="text" id="login-username-input" placeholder="Enter unique username (e.g. Ananya)" autocomplete="off">
+        </div>
+
+        <button class="btn-primary w-full" id="btn-login-submit">
+          <i class="fa-solid fa-right-to-bracket"></i> Enter Sanctuary
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container hidden" id="main-app-container">
+    
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar" id="app-sidebar">
+      <div class="brand">
+        <div class="brand-logo">
+          <i class="fa-solid fa-wind logo-icon"></i>
+        </div>
+        <span class="brand-name">Aura</span>
+      </div>
+      
+      <div class="menu-items">
+        <button class="nav-btn active" data-target="dashboard">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-btn" data-target="journaling">
+          <i class="fa-solid fa-book-open"></i>
+          <span>AI Journal</span>
+        </button>
+        <button class="nav-btn" data-target="chat-companion">
+          <i class="fa-solid fa-comments"></i>
+          <span>Aura Chat</span>
+        </button>
+        <button class="nav-btn" data-target="coping-sanctuary">
+          <i class="fa-solid fa-heart-pulse"></i>
+          <span>Coping Room</span>
+        </button>
+        <button class="nav-btn" data-target="analytics">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Analytics</span>
+        </button>
+        <button class="nav-btn" data-target="settings">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Settings</span>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="profile-card-mini">
+          <i class="fa-solid fa-user-graduate user-avatar"></i>
+          <div class="profile-mini-details">
+            <span class="student-name" id="sidebar-student-name">Student</span>
+            <span class="student-target" id="sidebar-student-target">JEE Prep</span>
+          </div>
+        </div>
+        <button class="switch-user-btn" id="btn-switch-user" title="Switch Student Profile">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Switch Profile</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Screen Content Area -->
+    <main class="main-content">
+      
+      <!-- HEADER BAR -->
+      <header class="top-header">
+        <div class="header-left">
+          <h1 id="screen-title">Dashboard</h1>
+          <p class="subtitle" id="screen-subtitle">Your wellness overview</p>
+        </div>
+        <div class="header-right">
+          <div class="countdown-badge">
+            <i class="fa-regular fa-clock"></i>
+            <span id="exam-countdown-text">-- days to exam</span>
+          </div>
+          <button class="crisis-trigger-btn" id="crisis-button">
+            <i class="fa-solid fa-phone-volume"></i>
+            Help Support
+          </button>
+        </div>
+      </header>
+
+      <!-- SCREEN Content: DASHBOARD -->
+      <section class="screen active" id="screen-dashboard">
+        <!-- Daily Welcome Banner -->
+        <div class="welcome-banner">
+          <div class="welcome-text">
+            <h2>Welcome back, <span class="student-name-placeholder">Student</span>! ✨</h2>
+            <p id="motivational-quote" aria-live="polite">"Your worth is not measured by mock scores, but by your resilience."</p>
+            <button class="quote-refresh-btn" id="btn-refresh-quote" aria-label="Refresh motivational quote"><i class="fa-solid fa-rotate"></i> New Motivation</button>
+          </div>
+          <div class="welcome-art">
+            <i class="fa-solid fa-spa wellness-illustration"></i>
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+          <!-- Mood Widget -->
+          <div class="metric-card glass">
+            <div class="metric-header">
+              <span>Today's Mood</span>
+              <i class="fa-solid fa-face-smile text-primary"></i>
+            </div>
+            <div class="metric-body text-center">
+              <div class="mood-emoji-display" id="dash-mood-emoji">😐</div>
+              <h3 id="dash-mood-text">Stable</h3>
+            </div>
+            <div class="metric-footer">
+              <span id="dash-mood-desc">Updated from last journal</span>
+            </div>
+          </div>
+
+          <!-- Stress Widget -->
+          <div class="metric-card glass">
+            <div class="metric-header">
+              <span>Stress Intensity</span>
+              <i class="fa-solid fa-gauge text-warning"></i>
+            </div>
+            <div class="metric-body">
+              <div class="progress-gauge-container">
+                <svg viewBox="0 0 100 100" class="gauge">
+                  <path class="gauge-bg" d="M20,80 A40,40 0 1,1 80,80" fill="none" stroke-width="8"/>
+                  <path class="gauge-val" id="stress-gauge-path" d="M20,80 A40,40 0 1,1 80,80" fill="none" stroke-width="8" stroke-dasharray="188.4" stroke-dashoffset="188.4"/>
+                </svg>
+                <div class="gauge-text" id="dash-stress-val">0%</div>
+              </div>
+            </div>
+            <div class="metric-footer text-center" id="dash-stress-status">
+              Stress level: Normal
+            </div>
+          </div>
+
+          <!-- Burnout Early Warning -->
+          <div class="metric-card glass">
+            <div class="metric-header">
+              <span>Burnout Probability</span>
+              <i class="fa-solid fa-fire text-danger"></i>
+            </div>
+            <div class="metric-body">
+              <div class="burnout-container">
+                <div class="burnout-bar-outer">
+                  <div class="burnout-bar-inner" id="dash-burnout-bar" style="width: 0%;"></div>
+                </div>
+                <div class="burnout-value" id="dash-burnout-val">0%</div>
+              </div>
+              <p class="burnout-message-text" id="dash-burnout-message">Your energy cycles look stable.</p>
+            </div>
+            <div class="metric-footer" id="dash-burnout-footer">
+              <i class="fa-solid fa-shield-halved"></i> Normal range
+            </div>
+          </div>
+
+          <!-- Sleep Track Widget -->
+          <div class="metric-card glass">
+            <div class="metric-header">
+              <span>Sleep Tracking</span>
+              <i class="fa-solid fa-moon text-info"></i>
+            </div>
+            <div class="metric-body">
+              <div class="sleep-stat">
+                <h3 id="dash-sleep-hours">-- hrs</h3>
+                <p>vs. <span id="dash-sleep-goal">7.0</span>h goal</p>
+              </div>
+              <div class="sleep-efficiency-bar">
+                <div class="sleep-efficiency-fill" id="dash-sleep-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+            <div class="metric-footer" id="dash-sleep-footer">
+              Sleep affects formula retention
+            </div>
+          </div>
+        </div>
+
+        <!-- Triggers & Directives Section -->
+        <div class="dashboard-details-row">
+          <div class="dashboard-col glass trigger-box">
+            <h3><i class="fa-solid fa-triangle-exclamation"></i> Active Stress Triggers</h3>
+            <p class="small-desc">Extracted from your written expressions</p>
+            <div class="triggers-list-container" id="dash-triggers-container">
+              <div class="empty-state">No major stress triggers detected yet! Keep writing your journals.</div>
+            </div>
+          </div>
+
+          <div class="dashboard-col glass recommendations-box">
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Adaptive Wellness Coping Plan</h3>
+            <p class="small-desc">Tailored support plan based on your current well-being</p>
+            <div class="action-recommendation-card" id="dash-coping-card">
+              <div class="recommendation-content">
+                <h4 id="dash-coping-title">Structured Study Flow</h4>
+                <p id="dash-coping-text">Try using our study tracker to break down task goals without overloading your working memory.</p>
+              </div>
+              <button class="coping-action-btn" id="dash-coping-action-btn">Launch Coping exercise</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN Content: JOURNAL ANALYZER -->
+      <section class="screen" id="screen-journaling">
+        <div class="journal-layout">
+          <!-- Write Area -->
+          <div class="journal-write-panel glass">
+            <h3>Reflective Journal Sanctuary</h3>
+            <p class="panel-subtitle">Write freely about your prep pressure, parent expectations, mock tests, or study struggles. Your data stays local and confidential.</p>
+            
+            <div class="quick-starters">
+              <span>Need a starter?</span>
+              <div class="starter-chips">
+                <button class="starter-chip">I scored low in my mock test today...</button>
+                <button class="starter-chip">My parents are expecting IIT/NEET and I'm stressed...</button>
+                <button class="starter-chip">I studied all day but can't remember anything...</button>
+              </div>
+            </div>
+
+            <div class="textarea-wrapper">
+              <textarea id="journal-input" placeholder="How are you really feeling today? Write your honest thoughts..." aria-label="Reflective daily journal input space"></textarea>
+              <div class="textarea-actions">
+                <button class="voice-btn" id="btn-voice-input">
+                  <i class="fa-solid fa-microphone"></i>
+                  <span id="voice-status-text">Voice Input</span>
+                </button>
+                <span class="char-count" id="journal-char-count">0 characters</span>
+              </div>
+            </div>
+
+            <div class="journal-actions">
+              <button class="btn-primary" id="btn-analyze-journal">
+                <i class="fa-solid fa-brain"></i> Analyze Entry & Log Mood
+              </button>
+            </div>
+          </div>
+
+          <!-- Analysis Reports -->
+          <div class="journal-analysis-panel glass">
+            <h3>AI Analytical Insights</h3>
+            <div class="analysis-results-placeholder" id="analysis-empty-placeholder">
+              <i class="fa-solid fa-chart-simple placeholder-icon"></i>
+              <h4>No Entry Analyzed Yet</h4>
+              <p>Write or dictate a journal entry and click "Analyze" to see detailed breakdowns of your emotions, stress scores, and triggers.</p>
+            </div>
+            
+            <div class="analysis-results-content hidden" id="analysis-results-wrapper" aria-live="polite">
+              <div class="analysis-metric-row">
+                <div class="analysis-metric-item">
+                  <span class="label">Emotion</span>
+                  <span class="value text-primary" id="analysis-emotion">Anxious</span>
+                </div>
+                <div class="analysis-metric-item">
+                  <span class="label">Stress Score</span>
+                  <span class="value" id="analysis-stress">85%</span>
+                </div>
+                <div class="analysis-metric-item">
+                  <span class="label">Burnout Probability</span>
+                  <span class="value" id="analysis-burnout">70%</span>
+                </div>
+              </div>
+
+              <div class="analysis-section">
+                <h4><i class="fa-solid fa-bullseye"></i> Detected Triggers</h4>
+                <div class="analysis-triggers" id="analysis-triggers-list">
+                  <!-- Triggers dynamically injected here -->
+                </div>
+              </div>
+
+              <div class="analysis-section">
+                <h4><i class="fa-solid fa-quote-left"></i> Summary</h4>
+                <p id="analysis-summary" class="analysis-text">Student is struggling with test score anxiety.</p>
+              </div>
+
+              <div class="analysis-section">
+                <h4><i class="fa-solid fa-lightbulb"></i> Critical Mentorship Insight</h4>
+                <p id="analysis-insight" class="analysis-text">Focus on small gains instead of absolute rankings.</p>
+              </div>
+
+              <div class="analysis-section coping-recommendation-box">
+                <h4><i class="fa-solid fa-circle-check"></i> Recommended Coping Protocol</h4>
+                <div class="coping-suggestion-block">
+                  <div class="icon-box" id="analysis-coping-icon-container">
+                    <i class="fa-solid fa-wind"></i>
+                  </div>
+                  <div class="details">
+                    <span class="name" id="analysis-coping-name">4-7-8 Deep Breathing</span>
+                    <span class="reason" id="analysis-coping-reason">Reduces instant adrenaline spikes and lowers heart rate.</span>
+                  </div>
+                  <button class="coping-nav-btn" id="btn-launch-suggested-coping">Start Now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN Content: CHAT COMPANION -->
+      <section class="screen" id="screen-chat-companion">
+        <div class="chat-container glass">
+          <!-- Chat Header -->
+          <div class="chat-header-bar">
+            <div class="bot-info">
+              <div class="avatar-wrapper">
+                <i class="fa-solid fa-wind bot-avatar-icon"></i>
+                <div class="status-dot-pulse"></div>
+              </div>
+              <div class="bot-meta">
+                <h4>Aura</h4>
+                <span>Active & Listening Companion</span>
+              </div>
+            </div>
+            <button class="clear-chat-btn" id="btn-clear-chat" title="Clear Chat History">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+
+          <!-- Conversation Area -->
+          <div class="chat-messages-area" id="chat-messages-container" aria-live="polite">
+            <!-- Messages injected dynamically -->
+          </div>
+
+          <!-- Preset Prompts -->
+          <div class="chat-suggested-prompts">
+            <button class="suggested-prompt-chip">I failed a mock test</button>
+            <button class="suggested-prompt-chip">I feel peer pressure</button>
+            <button class="suggested-prompt-chip">I cannot focus</button>
+            <button class="suggested-prompt-chip">I'm so exhausted</button>
+          </div>
+
+          <!-- Chat Input -->
+          <div class="chat-input-bar">
+            <input type="text" id="chat-user-input" placeholder="Talk to Aura... (e.g. 'I'm feeling overwhelmed')" autocomplete="off" aria-label="Empathetic chat companion message input space">
+            <button class="chat-send-btn" id="btn-chat-send" aria-label="Send message">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN Content: COPING SANCTUARY -->
+      <section class="screen" id="screen-coping-sanctuary">
+        <div class="coping-sanctuary-layout">
+          <!-- Navigation sub-bar -->
+          <div class="coping-tabs">
+            <button class="coping-tab-btn active" data-sub="breathing">
+              <i class="fa-solid fa-wind"></i> 4-7-8 Breathing
+            </button>
+            <button class="coping-tab-btn" data-sub="grounding">
+              <i class="fa-solid fa-anchor"></i> 5-4-3-2-1 Grounding
+            </button>
+            <button class="coping-tab-btn" data-sub="affirmations">
+              <i class="fa-solid fa-circle-check"></i> Affirmations
+            </button>
+            <button class="coping-tab-btn" data-sub="pomodoro">
+              <i class="fa-solid fa-business-time"></i> Pomodoro Break
+            </button>
+          </div>
+
+          <!-- Sub-Screen: Breathing -->
+          <div class="coping-sub-screen active" id="coping-breathing">
+            <div class="breathing-card glass text-center">
+              <h3>Mindful 4-7-8 Breathing Guide</h3>
+              <p>Calms the nervous system, lowers adrenaline, and restores test focus.</p>
+              
+              <div class="breathing-circle-wrapper">
+                <div class="breathing-pulse-circle" id="breathing-circle"></div>
+                <div class="breathing-stage-label" id="breathing-label">Ready</div>
+                <div class="breathing-timer" id="breathing-sec-counter">--</div>
+              </div>
+
+              <div class="breathing-controls">
+                <button class="btn-primary" id="btn-breathing-control">Start Session</button>
+                <button class="btn-secondary hidden" id="btn-breathing-stop">Stop</button>
+              </div>
+
+              <p class="breathing-hint" id="breathing-stage-hint">Press Start. The circle will expand as you breathe in, hold, and shrink as you release stress.</p>
+            </div>
+          </div>
+
+          <!-- Sub-Screen: Grounding -->
+          <div class="coping-sub-screen" id="coping-grounding">
+            <div class="grounding-card glass">
+              <h3>5-4-3-2-1 Grounding Exercise</h3>
+              <p class="subtitle">A cognitive anchors method to halt exam panic attacks by reconnecting your mind to the physical room.</p>
+              
+              <div class="grounding-list">
+                <div class="grounding-step">
+                  <div class="step-num">5</div>
+                  <div class="step-details">
+                    <label>Things you can SEE around you (e.g. your desk, book cover, wall color)</label>
+                    <input type="text" placeholder="Write item 1, 2, 3, 4, 5...">
+                  </div>
+                </div>
+
+                <div class="grounding-step">
+                  <div class="step-num">4</div>
+                  <div class="step-details">
+                    <label>Physical sensations you can FEEL (e.g. pressure of chair, wind of fan, keyboard keys)</label>
+                    <input type="text" placeholder="Write physical sensations...">
+                  </div>
+                </div>
+
+                <div class="grounding-step">
+                  <div class="step-num">3</div>
+                  <div class="step-details">
+                    <label>Sounds you can HEAR (e.g. birds chirping, AC hum, distant traffic)</label>
+                    <input type="text" placeholder="Write sounds...">
+                  </div>
+                </div>
+
+                <div class="grounding-step">
+                  <div class="step-num">2</div>
+                  <div class="step-details">
+                    <label>Things you can SMELL (e.g. pages of book, pencil wood, coffee aroma)</label>
+                    <input type="text" placeholder="Write smells...">
+                  </div>
+                </div>
+
+                <div class="grounding-step">
+                  <div class="step-num">1</div>
+                  <div class="step-details">
+                    <label>Thing you can TASTE (e.g. mint flavor, water clean taste, coffee bitterness)</label>
+                    <input type="text" placeholder="Write taste...">
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-center mt-20">
+                <button class="btn-primary" id="btn-submit-grounding">Complete Anchoring Session</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-Screen: Affirmations -->
+          <div class="coping-sub-screen" id="coping-affirmations">
+            <div class="affirmations-card glass text-center">
+              <h3>Empathetic Affirmations Board</h3>
+              <p>Reframe academic imposter syndrome with evidence-based positive talk.</p>
+              
+              <div class="affirmation-display-box">
+                <p class="quote-text" id="affirmation-text">"I am more than my mock examination scores. My intelligence is dynamic, and I am learning more every single day."</p>
+              </div>
+
+              <div class="affirmation-controls">
+                <button class="btn-secondary" id="btn-prev-affirmation"><i class="fa-solid fa-arrow-left"></i> Previous</button>
+                <button class="btn-primary" id="btn-speak-affirmation"><i class="fa-solid fa-volume-high"></i> Listen Speak</button>
+                <button class="btn-secondary" id="btn-next-affirmation">Next <i class="fa-solid fa-arrow-right"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-Screen: Pomodoro Timer -->
+          <div class="coping-sub-screen" id="coping-pomodoro">
+            <div class="pomodoro-card glass text-center">
+              <h3>Pomodoro Wellness Study Break</h3>
+              <p>Maintain high neuro-retention rates by mixing focus cycles with mandatory rests.</p>
+
+              <div class="pomo-mode-selector">
+                <button class="pomo-mode-btn active" data-time="1500" data-mode="focus">Study Focus (25m)</button>
+                <button class="pomo-mode-btn" data-time="300" data-mode="short">Rest Break (5m)</button>
+                <button class="pomo-mode-btn" data-time="900" data-mode="long">Long Rest (15m)</button>
+              </div>
+
+              <div class="timer-display-circle">
+                <div class="timer-digits" id="pomo-time-display">25:00</div>
+                <div class="timer-mode-label" id="pomo-mode-label">Focus Loop</div>
+              </div>
+
+              <div class="pomo-timer-controls">
+                <button class="btn-primary" id="btn-pomo-start">Start focus</button>
+                <button class="btn-secondary hidden" id="btn-pomo-pause">Pause</button>
+                <button class="btn-secondary" id="btn-pomo-reset">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN Content: ANALYTICS -->
+      <section class="screen" id="screen-analytics">
+        <div class="analytics-layout">
+          <!-- Main Chart -->
+          <div class="chart-container-large glass">
+            <h3>Weekly Emotional Trajectory</h3>
+            <p class="chart-desc">Tracks Stress, Confidence, and Motivation scores over your journal entries</p>
+            <div class="chart-wrapper">
+              <canvas id="line-chart-wellness"></canvas>
+            </div>
+          </div>
+
+          <!-- Two columns under the main chart -->
+          <div class="analytics-two-col">
+            <div class="chart-container-small glass">
+              <h3>Stress Triggers Distribution</h3>
+              <p class="chart-desc">Recurrent issues driving emotional anomalies</p>
+              <div class="chart-wrapper">
+                <canvas id="bar-chart-triggers"></canvas>
+              </div>
+            </div>
+
+            <div class="summary-analytics-card glass">
+              <h3>Executive Mental Report</h3>
+              <div class="summary-report-block">
+                <div class="summary-report-item">
+                  <span class="metric-val text-primary" id="analytics-avg-stress">0%</span>
+                  <span class="metric-lbl">Average Stress</span>
+                </div>
+                <div class="summary-report-item">
+                  <span class="metric-val text-warning" id="analytics-avg-burnout">0%</span>
+                  <span class="metric-lbl">Burnout Index</span>
+                </div>
+                <div class="summary-report-item">
+                  <span class="metric-val text-success" id="analytics-total-entries">0</span>
+                  <span class="metric-lbl">Logged Journals</span>
+                </div>
+              </div>
+              <div class="wellness-feedback-text">
+                <h4 id="analytics-insight-header">Stability Evaluation</h4>
+                <p id="analytics-insight-text">Write at least 3 journal entries to generate complete weekly stress trajectory analyses.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN Content: SETTINGS -->
+      <section class="screen" id="screen-settings">
+        <div class="settings-layout glass">
+          <h3>Aura Configuration Settings</h3>
+          <p class="subtitle">Personalize your exam tracking dates, sleep thresholds, and view API settings.</p>
+          
+          <form id="settings-form" onsubmit="return false;">
+            
+            <div class="form-section">
+              <h4>Student Identity</h4>
+              <div class="form-row-grid">
+                <div class="form-group">
+                  <label for="settings-name">Name</label>
+                  <input type="text" id="settings-name" placeholder="E.g., Aryan">
+                </div>
+                <div class="form-group">
+                  <label for="settings-exam">Targeting Examination</label>
+                  <select id="settings-exam">
+                    <option value="JEE Main & Advanced">JEE Main & Advanced</option>
+                    <option value="NEET UG">NEET UG</option>
+                    <option value="UPSC Civil Services">UPSC Civil Services</option>
+                    <option value="GATE">GATE</option>
+                    <option value="CAT">CAT</option>
+                    <option value="CUET">CUET</option>
+                    <option value="Board Exams">Board Exams</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4>Goals & Milestones</h4>
+              <div class="form-row-grid">
+                <div class="form-group">
+                  <label for="settings-exam-date">Date of Examination</label>
+                  <input type="date" id="settings-exam-date">
+                </div>
+                <div class="form-group">
+                  <label for="settings-sleep-goal">Daily Sleep Target (Hours)</label>
+                  <input type="number" id="settings-sleep-goal" min="4" max="12" step="0.5" placeholder="7">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4>AI Cloud Integration Status</h4>
+              <p class="form-note">Aura checks the server environmental parameters (.env) for Gemini API connections. This guarantees API key keys are never leaked to the client browser.</p>
+              <div class="api-integration-card" id="settings-key-status-box">
+                <i class="fa-solid fa-circle-notch fa-spin"></i> Checking integration status...
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4>Safety & Emergency Protocol</h4>
+              <div class="form-group checkbox-group">
+                <input type="checkbox" id="settings-emergency-alert" checked>
+                <label for="settings-emergency-alert">Enable Emergency Crisis Helper hotlines trigger on journaling panel</label>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn-primary" id="btn-save-settings">Save Configurations</button>
+              <span class="save-status-msg" id="settings-save-status"></span>
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- CRISIS SAFETY OVERLAY MODAL -->
+  <div class="crisis-modal-overlay hidden" id="crisis-modal">
+    <div class="crisis-modal-card">
+      <div class="crisis-modal-header">
+        <i class="fa-solid fa-circle-exclamation crisis-icon"></i>
+        <h2>You are not alone. Let's take a pause. 🤍</h2>
+      </div>
+      <div class="crisis-modal-body">
+        <p>Aura detected that you might be experiencing intense stress, hopelessness, or thoughts of giving up. Please remember that exams are a minor chapter of your beautiful life. You do not have to carry this load in isolation.</p>
+        
+        <div class="crisis-admonition-tip">
+          <strong>Immediate step:</strong> Close your books. Stand up, sip some water, and speak to a parent, friend, sibling, or teacher right now.
+        </div>
+
+        <h4>National Mental Health Helplines (India)</h4>
+        <div class="helpline-list">
+          <div class="helpline-item">
+            <div class="helpline-info">
+              <span class="helpline-name">Tele-MANAS (Govt Mental Health Help)</span>
+              <span class="helpline-desc">Free, confidential 24/7 support</span>
+            </div>
+            <a href="tel:14416" class="helpline-call-btn"><i class="fa-solid fa-phone"></i> 14416</a>
+          </div>
+          
+          <div class="helpline-item">
+            <div class="helpline-info">
+              <span class="helpline-name">KIRAN (Helpline by Ministry of Social Justice)</span>
+              <span class="helpline-desc">Free, national 24/7 helpline</span>
+            </div>
+            <a href="tel:18005990019" class="helpline-call-btn"><i class="fa-solid fa-phone"></i> 1800-599-0019</a>
+          </div>
+
+          <div class="helpline-item">
+            <div class="helpline-info">
+              <span class="helpline-name">AASRA Foundation</span>
+              <span class="helpline-desc">24/7 Suicide Prevention Support</span>
+            </div>
+            <a href="tel:919820466726" class="helpline-call-btn"><i class="fa-solid fa-phone"></i> 91-9820466726</a>
+          </div>
+        </div>
+      </div>
+      <div class="crisis-modal-footer">
+        <button class="btn-primary" id="btn-close-crisis">I'm okay, return to app</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main script -->
+  <script src="app.js"></script>
+</body>
+</html>

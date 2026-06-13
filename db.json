@@ -1,0 +1,333 @@
+{
+  "users": {
+    "aryan": {
+      "user_profile": {
+        "name": "Aryan",
+        "exam": "JEE Advanced",
+        "target_date": "2027-05-24",
+        "sleep_goal_hours": 7
+      },
+      "journals": [
+        {
+          "id": "j-1",
+          "timestamp": "2026-06-08T21:30:00.000Z",
+          "raw_text": "Started revision for physics today. Felt pretty confident during mock practice, though I spent too much time on mechanics. Slept well last night, got almost 7.5 hours.",
+          "analysis": {
+            "primary_emotion": "Confident",
+            "stress_score": 25,
+            "burnout_risk": 20,
+            "confidence_score": 80,
+            "motivation_score": 85,
+            "sleep_hours": 7.5,
+            "detected_triggers": [],
+            "summary": "revision went well, confident in mechanics",
+            "insights": "Great sleep pattern matches high confidence. Keep this rhythm.",
+            "coping_recommendation": "pomodoro",
+            "safety_level": "safe"
+          }
+        },
+        {
+          "id": "j-2",
+          "timestamp": "2026-06-09T22:15:00.000Z",
+          "raw_text": "Mock test result came out and it was quite disappointing. Got only 52% in chemistry. Felt a pinch when my dad asked if I am putting in enough hours. Made me feel like I am lagging behind everyone in the batch.",
+          "analysis": {
+            "primary_emotion": "Disappointed",
+            "stress_score": 65,
+            "burnout_risk": 40,
+            "confidence_score": 45,
+            "motivation_score": 55,
+            "sleep_hours": 6,
+            "detected_triggers": [
+              "Low Mock Scores",
+              "Family Expectations",
+              "Peer Comparison"
+            ],
+            "summary": "Disappointed with chemistry mock test, feeling pressure from dad and peers.",
+            "insights": "Comparison with peers and parental expectations are driving the stress spike.",
+            "coping_recommendation": "affirmations",
+            "safety_level": "safe"
+          }
+        },
+        {
+          "id": "j-3",
+          "timestamp": "2026-06-10T23:05:00.000Z",
+          "raw_text": "Studied for 13 hours today but felt like I accomplished nothing. My brain feels so sluggish. I had three cups of coffee and now I can't fall asleep, even though my eyes are burning. It is 11 PM and I'm still anxious.",
+          "analysis": {
+            "primary_emotion": "Anxious",
+            "stress_score": 80,
+            "burnout_risk": 75,
+            "confidence_score": 35,
+            "motivation_score": 40,
+            "sleep_hours": 4.5,
+            "detected_triggers": [
+              "Study Overload",
+              "Sleep Deprivation"
+            ],
+            "summary": "Anxious and sluggish after 13 hours of study, struggling to sleep due to caffeine.",
+            "insights": "Warning: High caffeine and excessive study hours are leading to sleep deprivation and cognitive fatigue.",
+            "coping_recommendation": "breathing",
+            "safety_level": "safe"
+          }
+        },
+        {
+          "id": "j-4",
+          "timestamp": "2026-06-11T22:40:00.000Z",
+          "raw_text": "Woke up with a headache. I could barely study today, spent hours scrolling through Telegram groups checking what others are scoring. I feel like a total impostor. Why am I even trying? Maybe I'm just not cut out for this exam.",
+          "analysis": {
+            "primary_emotion": "Hopeless",
+            "stress_score": 90,
+            "burnout_risk": 85,
+            "confidence_score": 15,
+            "motivation_score": 20,
+            "sleep_hours": 5,
+            "detected_triggers": [
+              "Peer Comparison",
+              "Social Media",
+              "Sleep Deprivation"
+            ],
+            "summary": "Severe imposter syndrome, headache, and scroll distraction on Telegram.",
+            "insights": "Negative self-talk detected: 'I feel like a total impostor' and 'Why am I even trying?'. High burnout warning triggered.",
+            "coping_recommendation": "grounding",
+            "safety_level": "concerning"
+          }
+        },
+        {
+          "id": "j-5",
+          "timestamp": "2026-06-12T21:50:00.000Z",
+          "raw_text": "Felt a bit better after talking to my friend who is in the same boat. We decided to take regular Pomodoro breaks. I also tried that breathing exercise to calm down before solving math. Got around 6.5 hours of sleep.",
+          "analysis": {
+            "primary_emotion": "Relieved",
+            "stress_score": 55,
+            "burnout_risk": 65,
+            "confidence_score": 50,
+            "motivation_score": 60,
+            "sleep_hours": 6.5,
+            "detected_triggers": [
+              "Peer Comparison"
+            ],
+            "summary": "Felt relieved after talking to a friend, using breathing exercise and Pomodoro breaks.",
+            "insights": "Social support and structured study breaks are successfully cooling down burnout indicators.",
+            "coping_recommendation": "pomodoro",
+            "safety_level": "safe"
+          }
+        },
+        {
+          "id": "j-1781333965547",
+          "timestamp": "2026-06-13T06:59:25.547Z",
+          "raw_text": "I scored low in my chemistry mock test today and I feel very stressed about parent expectations.",
+          "analysis": {
+            "primary_emotion": "Stable",
+            "stress_score": 60,
+            "burnout_risk": 51,
+            "confidence_score": 60,
+            "motivation_score": 65,
+            "sleep_hours": null,
+            "detected_triggers": [
+              "Low Mock Scores",
+              "Family Expectations"
+            ],
+            "summary": "Student reports feeling stable during preparation. Triggers include: Low Mock Scores, Family Expectations.",
+            "insights": "Perspective: Mock tests are diagnostic tools, not end results. Reframe them as 'error-identifications'.",
+            "coping_recommendation": "pomodoro",
+            "safety_level": "safe"
+          }
+        },
+        {
+          "id": "j-1781334440065",
+          "timestamp": "2026-06-13T07:07:20.065Z",
+          "raw_text": "I scored low in my mock test today...",
+          "analysis": {
+            "primary_emotion": "Stable",
+            "stress_score": 50,
+            "burnout_risk": 43,
+            "confidence_score": 60,
+            "motivation_score": 65,
+            "sleep_hours": null,
+            "detected_triggers": [
+              "Low Mock Scores"
+            ],
+            "summary": "Student reports feeling stable during preparation. Triggers include: Low Mock Scores.",
+            "insights": "Perspective: Mock tests are diagnostic tools, not end results. Reframe them as 'error-identifications'.",
+            "coping_recommendation": "pomodoro",
+            "safety_level": "safe"
+          }
+        },
+        {
+          "id": "j-1781334476602",
+          "timestamp": "2026-06-13T07:07:56.602Z",
+          "raw_text": "my relative came at how and keep asking about my scores",
+          "analysis": {
+            "primary_emotion": "Stable",
+            "stress_score": 50,
+            "burnout_risk": 43,
+            "confidence_score": 60,
+            "motivation_score": 65,
+            "sleep_hours": null,
+            "detected_triggers": [
+              "Low Mock Scores"
+            ],
+            "summary": "Student reports feeling stable during preparation. Triggers include: Low Mock Scores.",
+            "insights": "Perspective: Mock tests are diagnostic tools, not end results. Reframe them as 'error-identifications'.",
+            "coping_recommendation": "pomodoro",
+            "safety_level": "safe"
+          }
+        },
+        {
+          "id": "j-1781335849044",
+          "timestamp": "2026-06-13T07:30:49.044Z",
+          "raw_text": "I completed a hard math revision session today and I'm feeling moderately confident, though I need to improve physics.",
+          "analysis": {
+            "primary_emotion": "Confident",
+            "stress_score": 40,
+            "burnout_risk": 36,
+            "confidence_score": 85,
+            "motivation_score": 85,
+            "sleep_hours": null,
+            "detected_triggers": [
+              "Low Mock Scores",
+              "Study Overload"
+            ],
+            "summary": "Student reports feeling confident during preparation. Triggers include: Low Mock Scores, Study Overload.",
+            "insights": "Perspective: Mock tests are diagnostic tools, not end results. Reframe them as 'error-identifications'.",
+            "coping_recommendation": "pomodoro",
+            "safety_level": "safe"
+          }
+        },
+        {
+          "id": "j-1781336356168",
+          "timestamp": "2026-06-13T07:39:16.168Z",
+          "raw_text": "I completed a hard math revision session today and I&#039;m feeling moderately confident, though I need to improve physics.",
+          "analysis": {
+            "primary_emotion": "Confident",
+            "stress_score": 25,
+            "burnout_risk": 10,
+            "confidence_score": 70,
+            "motivation_score": 85,
+            "sleep_hours": null,
+            "detected_triggers": [],
+            "summary": "Completed hard math revision, feeling confident, but identified need to improve physics.",
+            "insights": "Acknowledge your math progress. Plan a structured approach for physics to build further confidence.",
+            "coping_recommendation": "pomodoro",
+            "safety_level": "safe"
+          }
+        }
+      ],
+      "chats": [
+        {
+          "id": "c-1",
+          "timestamp": "2026-06-12T22:00:00.000Z",
+          "sender": "bot",
+          "text": "Hi Aryan! I'm Aura. I'm here to support you through your JEE Advanced prep journey. How are you feeling today?"
+        },
+        {
+          "id": "c-2",
+          "timestamp": "2026-06-12T22:01:00.000Z",
+          "sender": "user",
+          "text": "Just completed a hard revision session. A bit tired but glad I got through it."
+        },
+        {
+          "id": "c-3",
+          "timestamp": "2026-06-12T22:01:10.000Z",
+          "sender": "bot",
+          "text": "I'm so proud of you for showing up and completing that session! fatigue is natural, so please make sure you give your mind some well-deserved rest now. Sleep is just as important as studying!"
+        },
+        {
+          "id": "c-1781334049165",
+          "timestamp": "2026-06-13T07:00:49.165Z",
+          "sender": "user",
+          "text": "I feel lonely and tired of studying JEE papers"
+        },
+        {
+          "id": "c-1781334049166",
+          "timestamp": "2026-06-13T07:00:49.165Z",
+          "sender": "bot",
+          "text": "Burnout is real and your brain is telling you to rest. Studying while exhausted is like writing with an empty pen—nothing sticks. Set a hard stop tonight, get some sleep, and let's start fresh tomorrow. Your health comes first."
+        },
+        {
+          "id": "c-1781334065178",
+          "timestamp": "2026-06-13T07:01:05.178Z",
+          "sender": "user",
+          "text": "I want to die, I can't take this JEE exam pressure anymore, it is hopeless"
+        },
+        {
+          "id": "c-1781334065179",
+          "timestamp": "2026-06-13T07:01:05.178Z",
+          "sender": "bot",
+          "text": "I hear how much pain you are in right now, and I want you to know that you are not alone. Please, reach out to someone who can help. You can call the national helpline AASRA at 91-9820466726, or Tele-MANAS at 14416 (available 24/7 in India). I'm a support companion, but please speak to a trusted adult or professional therapist right now. Your life is infinitely valuable."
+        },
+        {
+          "id": "c-1781334248489",
+          "timestamp": "2026-06-13T07:04:08.489Z",
+          "sender": "user",
+          "text": "I cannot focus"
+        },
+        {
+          "id": "c-1781334248490",
+          "timestamp": "2026-06-13T07:04:08.489Z",
+          "sender": "bot",
+          "text": "I'm listening. Preparing for high-stakes exams is a marathon, not a sprint. Remember to be kind to yourself today. Tell me more, or let me know if you want to try a coping exercise."
+        },
+        {
+          "id": "c-1781334278863",
+          "timestamp": "2026-06-13T07:04:38.863Z",
+          "sender": "user",
+          "text": "I'm so exhausted"
+        },
+        {
+          "id": "c-1781334278864",
+          "timestamp": "2026-06-13T07:04:38.863Z",
+          "sender": "bot",
+          "text": "Burnout is real and your brain is telling you to rest. Studying while exhausted is like writing with an empty pen—nothing sticks. Set a hard stop tonight, get some sleep, and let's start fresh tomorrow. Your health comes first."
+        },
+        {
+          "id": "c-1781334595355",
+          "timestamp": "2026-06-13T07:09:55.355Z",
+          "sender": "user",
+          "text": "i am not gonna live"
+        },
+        {
+          "id": "c-1781334595356",
+          "timestamp": "2026-06-13T07:09:55.355Z",
+          "sender": "bot",
+          "text": "I hear how much pain you are in right now, and I want you to know that you are not alone. Please, reach out to someone who can help. You can call the national helpline AASRA at 91-9820466726, or Tele-MANAS at 14416 (available 24/7 in India). I'm a support companion, but please speak to a trusted adult or professional therapist right now. Your life is infinitely valuable."
+        },
+        {
+          "id": "c-1781335937129",
+          "timestamp": "2026-06-13T07:32:17.129Z",
+          "sender": "user",
+          "text": "how can i improve my score"
+        },
+        {
+          "id": "c-1781335937934",
+          "timestamp": "2026-06-13T07:32:17.933Z",
+          "sender": "bot",
+          "text": "Mock scores are just checkpoints for errors, not a definition of your intelligence. If you are preparing for JEE Advanced, look at the questions you got wrong and fix the concept. Don't let a single number dictate your capability."
+        },
+        {
+          "id": "c-1781335989108",
+          "timestamp": "2026-06-13T07:33:09.108Z",
+          "sender": "user",
+          "text": "I'm so exhausted"
+        },
+        {
+          "id": "c-1781335989631",
+          "timestamp": "2026-06-13T07:33:09.630Z",
+          "sender": "bot",
+          "text": "Burnout is real and your brain is telling you to rest. Studying while exhausted is like writing with an empty pen—nothing sticks. Set a hard stop tonight, get some sleep, and let's start fresh tomorrow. Your health comes first."
+        },
+        {
+          "id": "c-1781336401429",
+          "timestamp": "2026-06-13T07:40:01.429Z",
+          "sender": "user",
+          "text": "Hello"
+        },
+        {
+          "id": "c-1781336409381",
+          "timestamp": "2026-06-13T07:40:09.380Z",
+          "sender": "bot",
+          "text": "Hello there. It's good to hear from you. Remember, I'm always here to listen, no matter what you're feeling. If things ever feel truly overwhelming, please reach out to AASRA at 91-9820466726 or Tele-MANAS at 14416. Your well-being is what matters most."
+        }
+      ]
+    }
+  }
+}
